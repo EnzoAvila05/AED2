@@ -39,3 +39,23 @@
 
 # debug information files
 *.dwo
+
+# CLion specific
+.idea/
+cmake-build-*/
+*.user
+*.iws
+*.iml
+*.ipr
+
+# Compiled files
+*.o
+*.a
+*.so
+*.dll
+*.exe
+
+# Build directories
+build/
+Debug/
+Release/
