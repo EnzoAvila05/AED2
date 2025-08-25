@@ -18,6 +18,11 @@ public:
         adj = new list<Vertex>[num_vertices];
     }
 
+    ~GraphAL() {
+        delete[] adj;
+        adj = nullptr;
+    }
+
     void add_edge(Vertex u, Vertex v) {
         if (u >= num_vertices || v >= num_vertices || u == v) {
             throw invalid_argument("Argumentos inválidos");
@@ -27,20 +32,41 @@ public:
         num_edges++;
     }
 
+    void remove_edge(Vertex u, Vertex v) {
+        if (u >= num_vertices || v >= num_vertices || u == v) {
+            throw invalid_argument("Argumentos inválidos");
+        }
+        adj[u].remove(v);
+        adj[v].remove(u);
+        num_edges--;
+    }
+
     list<Vertex> get_adj(Vertex u) {
+        if (u >= num_vertices) {
+            throw invalid_argument("Vértice inválido");
+        }
         return adj[u];
     }
 
     uint get_num_vertices() {
         return num_vertices;
-    };
+    }
+
+    uint get_num_edges() {
+        return num_edges;
+    }
 
 };
 
-void print_graph(GraphAL g) {
-    for (int u = 0; u < g.get_num_vertices(); ++u) {
-        list<Vertex> adj_u = g.get_adj(u);
-        for (const auto& v : adj_u) {
+void print_adjacency_list(GraphAL& g) {
+    uint n = g.get_num_vertices();
+    cout << "num_vertices: " << n << endl;
+    cout << "num_edges: " << g.get_num_edges() << endl;
+
+    for (uint u = 0; u < n; ++u) {
+        list<Vertex> l = g.get_adj(u);
+        cout << u << ": ";
+        for (const auto& v : l) {
             cout << v << ", ";
         }
         cout << endl;
@@ -48,20 +74,23 @@ void print_graph(GraphAL g) {
 }
 
 int main() {
-    GraphAL g(4);
+    uint n = 0;
+    uint m = 0;
+    cin >> n >> m;
 
-    try {
-        g.add_edge(0, 1);
-        g.add_edge(1, 2);
-        g.add_edge(2, 3);
-        g.add_edge(3, 0);
+    GraphAL graph(n);
 
+    uint u = 0, v = 0;
 
-        print_graph(g);
-    } catch (const invalid_argument& e) {
-        cout << e.what() << endl;
+    for (uint i = 0; i < m; ++i) {
+        cin >> u >> v;
+        try {
+            graph.add_edge(u, v);
+        } catch (const invalid_argument& e) {
+            cout << "Aviso: Aresta (" << u << ", " << v << ") ignorada - " << e.what() << endl;
+        }
     }
-
+    print_adjacency_list(graph);
 
     return 0;
 }
